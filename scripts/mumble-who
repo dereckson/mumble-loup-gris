@@ -1,0 +1,67 @@
+#!/usr/local/bin/tclsh8.5
+
+#
+# Allows to get the list
+# Works only with script compatible with the viewer used by serveurmumble.com
+#
+# If this code is copyright eligible,
+# (c) 2010 Sébastien Santoro aka Dereckson
+# All rights reserved. Released under BSD license.
+#
+package require http
+
+#
+# Config
+#
+set server  6
+set port    6716
+set url     "http://www.serveurmumble.com/viewver/viewer.php?s=$server&port=$port"
+
+#
+# Helper moethods
+#
+
+#Searches a string several times 
+proc search_strings {string from to} {
+	set pos1 [string first $from $string]
+	if {$pos1 == -1} {
+		set pos1 0
+	} {
+		incr pos1 [string length $from]
+	}
+	set pos2 [string first $to $string $pos1]
+	if {$pos2 == -1} {
+		set pos2 end
+	} {
+		incr pos2 -1
+	}
+
+    if {$pos2 != "end"} {
+        set result [search_strings [string range $string $pos2+2 end] $from $to]
+        set player [string range $string $pos1 $pos2]
+        if {[string range $player 0 3] != "img "} {
+            lappend result $player
+        }
+    } {
+        return ""
+    }
+}
+
+#Find players in a servermumble.com viewer script HTML output
+proc mumble_who_find_players {html} {
+    set players [search_strings $html "player.gif>" "<img"]
+}
+
+#Finds players at the specified servermumble.com viewer script URL
+proc mumble_who {url} {
+    set token [::http::geturl $url]
+    set buffer [::http::data $token]
+    ::http::cleanup $token
+    lreverse [mumble_who_find_players $buffer]
+}
+
+#
+# Procedural code
+#
+
+puts [mumble_who $url]

@@ -1,0 +1,55 @@
+#!/usr/bin/env tclsh8.5
+#
+# Checks if there is players entering or quitting
+# the specified mumble server, comparing cached
+# and current mumble-who output
+
+#
+# Configuration
+#
+
+set username [exec id -u]
+set cached_result_file /tmp/mumble-who-$username
+set server "Mumble"
+
+#
+# Helper methods
+#
+
+proc lsubstract {listA listB} {
+    set listDiff {}
+    foreach item $listB {
+        if {[lsearch $listA $item] == -1} {
+            lappend listDiff $item
+        } 
+    }
+    return $listDiff
+}
+
+#
+# Procederal code
+#
+
+#Gets new result
+set new_result      [exec mumble-who]
+
+if [file exists $cached_result_file] {
+    # Gets cached result
+    set cached_result   [exec cat $cached_result_file]
+
+    # Compares them
+    foreach player [lsubstract $new_result $cached_result] {
+        puts "*** $player have exited $server."
+    }
+    foreach player [lsubstract $cached_result $new_result] {
+        puts "*** $player have joined $server."
+    }
+} {
+    # No cached result, prints who is on the server
+    puts "*** [join $new_result ", "] on $server."
+}
+    
+# Caches new result
+set fd [open $cached_result_file w]
+puts $fd $new_result
+close $fd
