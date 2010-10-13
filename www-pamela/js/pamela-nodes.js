@@ -175,7 +175,8 @@ Node.prototype.draw = Node.prototype.normal.draw;
 jQuery.extend(NorbertNode.prototype, Node.prototype);
 function NorbertNode() {
 	this.norbert = new Image();
-	this.norbert.src = "img/loup-gris-zarakai-03.png";
+	//this.norbert.src = "img/loup-gris-zarakai-03.png";
+	this.norbert.src = "logo.png";
 	self = this;
 	this.norbertLoaded = false;
 	this.norbert.onload=function() { self.norbertLoaded = true; }
