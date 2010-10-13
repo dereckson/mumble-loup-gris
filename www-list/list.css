@@ -19,6 +19,7 @@ body {
     background-color: black;
     background-image: url(logo.png);
     background-repeat: no-repeat;
+    background-position: 2em 2em;
     color: #272727;
     text-align: center;
 }
