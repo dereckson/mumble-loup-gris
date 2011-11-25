@@ -108,7 +108,7 @@ DownloadScriptButton.prototype.draw = function() {
 };
 
 DownloadScriptButton.prototype.execute = function() {
-	location.href = 'mumble://94.23.17.103:50566/?version=1.2.0';
+	location.href = 'mumble://213.251.156.206:50566/?version=1.2.3';
 };
 
 // Class IFace buttons
